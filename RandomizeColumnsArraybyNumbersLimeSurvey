@@ -1,0 +1,58 @@
+<script type="text/javascript" charset="utf-8">	
+	$(document).on('ready pjax:scriptcomplete',function(){
+		randomArrayNumCols({QID});
+    });
+ 
+	// A function to randomize columns in an array-numbers question
+	function randomArrayNumCols(qID){
+ 
+		var thisQuestion = $('#question'+qID);
+ 
+		// Index the array columns
+		$('table.subquestion-list tr', thisQuestion).each(function(i) {
+			$('> *', this).each(function(i) {
+				$(this).attr('data-index', i);
+			});
+		});
+ 
+		// Create an array of the columns
+		var columns = [];
+		$('table.subquestion-list tr[id^="javatbd"]:eq(0) td.answer-item', thisQuestion).each(function(i) {
+			columns.push($(this).attr('data-index'));
+		});
+ 
+		// Shuffle the columns array
+		columns = $.shuffle(columns);
+ 
+		// Reposition the row elements
+		$('table.subquestion-list tr', thisQuestion).each(function(i) {
+			var thisRow = $(this);
+			$(columns).each(function(i, val) {
+				thisRow.append($('[data-index="'+val+'"]', thisRow));
+				thisRow.append($('.col-no-answer', thisRow));
+			});
+		});
+	}
+ 
+	// A function to shuffle elements or contents of arrays
+	(function($){
+		$.fn.shuffle = function() {
+			return this.each(function(){
+				var items = $(this).children();
+				return (items.length)
+					? $(this).html($.shuffle(items))
+					: this;
+			});
+		}
+ 
+		$.shuffle = function(arr) {
+			for(
+				var j, x, i = arr.length; i;
+				j = parseInt(Math.random() * i),
+				x = arr[--i], arr[i] = arr[j], arr[j] = x
+			);
+			return arr;
+ 
+		}
+	})(jQuery);
+</script>
